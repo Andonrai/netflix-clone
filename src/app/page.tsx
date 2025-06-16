@@ -1,5 +1,10 @@
+"use client";
+import Navbar from "@/components/navbar";
+
 export default function Home() {
   return (
-    <h1>Netflix clone</h1>
+    <>
+      <Navbar/>
+    </>
   );
 }

@@ -26,7 +26,7 @@ export default function Auth() {
         email,
         name,
         password,
-        callbackURL: "/",
+        callbackURL: "/profiles",
       });
     } catch (error) {
       console.error("Registration error:", error);
@@ -38,7 +38,7 @@ export default function Auth() {
       await signIn.email({
         email,
         password,
-        callbackURL: "/",
+        callbackURL: "/profiles",
       });
     } catch (error) {
       console.error("Registration error:", error);
@@ -48,14 +48,14 @@ export default function Auth() {
   const doSignInSocialGithub = async () => {
     await signIn.social({
       provider: "github",
-
+      callbackURL: "/profiles",
     });
   };
 
   const doSignInSocialGoogle = async () => {
     await signIn.social({
       provider: "google",
-
+      callbackURL: "/profiles",
     });
   };
   return (
@@ -109,7 +109,10 @@ export default function Auth() {
                 {variant === "login" ? "Login" : "Sign up"}
               </button>
               <div className="flex flex-row items-center gap-4 mt-8 justify-center">
-                <div onClick={doSignInSocialGoogle} className="size-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition">
+                <div
+                  onClick={doSignInSocialGoogle}
+                  className="size-10 bg-white rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition"
+                >
                   <FcGoogle size={30} />
                 </div>
                 <div
