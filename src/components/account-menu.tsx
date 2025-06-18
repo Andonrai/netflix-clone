@@ -2,10 +2,11 @@ import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
 interface AccountMenuProps {
+  username?: string;
   visible?: boolean;
 }
 
-export default function AccountMenu({ visible }: AccountMenuProps) {
+export default function AccountMenu({ username, visible }: AccountMenuProps) {
   if (!visible) return null;
 
   const router = useRouter();
@@ -28,11 +29,14 @@ export default function AccountMenu({ visible }: AccountMenuProps) {
             src="/images/default-blue.webp"
             alt="Profile"
           />
-          <p className="text-sm group-hover/item:underline">Username</p>
+          <p className="text-sm group-hover/item:underline">{username}</p>
         </div>
         <hr className="bg-gray-600 border-0 h-px my-4" />
-        <div onClick={signOutButton} className="px-3 text-center text-sm hover:underline">
-            Sign out of Netflix
+        <div
+          onClick={signOutButton}
+          className="px-3 text-center text-sm hover:underline"
+        >
+          Sign out of Netflix
         </div>
       </div>
     </div>

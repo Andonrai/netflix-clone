@@ -3,10 +3,12 @@ import { Bell, ChevronDown, Search } from "lucide-react";
 import MobileMenu from "./mobile-menu";
 import NavbarItem from "./navbar-item";
 import AccountMenu from "./account-menu";
+import { useSession } from "@/lib/auth-client";
 
 const TOP_OFFSET = 66;
 
 export default function Navbar() {
+  const { data } = useSession();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showBackground, setShowBackground] = useState(false);
@@ -16,39 +18,39 @@ export default function Navbar() {
     // 1. Detectar automáticamente el contenedor de scroll
     const detectScrollContainer = () => {
       // Busca un elemento con overflow scroll (común en aplicaciones modernas)
-      const scrollElements = document.querySelectorAll('*');
+      const scrollElements = document.querySelectorAll("*");
       for (const element of scrollElements) {
         const style = getComputedStyle(element);
-        if (style.overflowY === 'auto' || style.overflowY === 'scroll') {
+        if (style.overflowY === "auto" || style.overflowY === "scroll") {
           if (element.scrollHeight > element.clientHeight) {
             return element as HTMLElement;
           }
         }
       }
-      
+
       // Usar el elemento raíz por defecto
       return document.scrollingElement || document.documentElement;
     };
 
-    scrollContainerRef.current = detectScrollContainer() as any || window;
+    scrollContainerRef.current = (detectScrollContainer() as any) || window;
 
     // 2. Manejar el scroll con throttling
     let lastScrollPosition = 0;
     let ticking = false;
-    
+
     const handleScroll = () => {
       if (!scrollContainerRef.current) return;
-      
+
       let currentScroll = 0;
-      
+
       if (scrollContainerRef.current === window) {
         currentScroll = window.scrollY || window.pageYOffset;
       } else {
         currentScroll = (scrollContainerRef.current as HTMLElement).scrollTop;
       }
-      
+
       lastScrollPosition = currentScroll;
-      
+
       if (!ticking) {
         window.requestAnimationFrame(() => {
           setShowBackground(lastScrollPosition >= TOP_OFFSET);
@@ -60,22 +62,22 @@ export default function Navbar() {
 
     // 3. Agregar event listener
     const container = scrollContainerRef.current;
-    
+
     if (container === window) {
-      window.addEventListener('scroll', handleScroll);
+      window.addEventListener("scroll", handleScroll);
     } else if (container instanceof HTMLElement) {
-      container.addEventListener('scroll', handleScroll);
+      container.addEventListener("scroll", handleScroll);
     }
-    
+
     // 4. Estado inicial
     handleScroll();
 
     // 5. Limpieza
     return () => {
       if (container === window) {
-        window.removeEventListener('scroll', handleScroll);
+        window.removeEventListener("scroll", handleScroll);
       } else if (container instanceof HTMLElement) {
-        container.removeEventListener('scroll', handleScroll);
+        container.removeEventListener("scroll", handleScroll);
       }
     };
   }, []);
@@ -136,7 +138,7 @@ export default function Navbar() {
                 showAccountMenu ? "rotate-180" : "rotate-0"
               }`}
             />
-            <AccountMenu visible={showAccountMenu} />
+            <AccountMenu username={data?.user.name} visible={showAccountMenu} />
           </div>
         </div>
       </div>
