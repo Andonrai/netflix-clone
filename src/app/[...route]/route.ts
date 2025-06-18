@@ -34,6 +34,28 @@ app.get("/movies", protect, async (c) => {
   return c.json(moviesData, 200);
 });
 
+app.get(
+  "/movies/:movieId",
+  protect,
+  zValidator(
+    "param",
+    z.object({
+      movieId: z.uuid(),
+    })
+  ),
+  async (c) => {
+    const { movieId } = c.req.param();
+    const [movieData] = await db
+      .select()
+      .from(movies)
+      .where(eq(movies.id, movieId));
+
+    if (!movieData) return c.json({ message: "Movie not found" }, 404);
+
+    return c.json(movieData, 200);
+  }
+);
+
 app.post(
   "/favorite",
   protect,
@@ -93,10 +115,7 @@ app.delete(
     const userData = c.get("user");
     const userId = userData?.id!;
 
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, userId));
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
 
     if (!user) {
       return c.json({ message: "User not found" }, 404);
@@ -106,7 +125,7 @@ app.delete(
       return c.json({ success: true }, 200);
     }
 
-    const updateFavoriteIds = user.favoriteIds.filter(id => id !== movieId);
+    const updateFavoriteIds = user.favoriteIds.filter((id) => id !== movieId);
 
     await db
       .update(users)

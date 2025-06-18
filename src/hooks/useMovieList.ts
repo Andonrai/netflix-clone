@@ -2,7 +2,7 @@ import { Movie } from "@/types/movie";
 import { useQuery } from "@tanstack/react-query";
 
 const useMovieList = () => {
-  const { isPending, isLoading, error, data } = useQuery<Movie[], Error>({
+  const { isLoading, error, data } = useQuery<Movie[], Error>({
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     queryKey: ["movieList"],
