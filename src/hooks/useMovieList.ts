@@ -1,14 +1,5 @@
+import { Movie } from "@/types/movie";
 import { useQuery } from "@tanstack/react-query";
-
-interface Movie {
-  id: string;
-  title: string;
-  description: string;
-  videoUrl: string;
-  thumbnailUrl: string;
-  genre: string;
-  duration: string;
-}
 
 const useMovieList = () => {
   const { isPending, isLoading, error, data } = useQuery<Movie[], Error>({
@@ -21,7 +12,6 @@ const useMovieList = () => {
   return {
     data,
     error,
-    isPending,
     isLoading,
   };
 };

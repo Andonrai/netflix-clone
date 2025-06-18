@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   pgTable,
   text,
@@ -14,10 +15,10 @@ export const users = pgTable("users", {
     .$defaultFn(() => false)
     .notNull(),
   image: text("image"),
-  favoriteIds: varchar("favorite_ids", { length: 24 })
-    .array()
-    .notNull()
-    .default([]),
+  favoriteIds: varchar("favorite_ids", { length: 36 }) // Longitud 36 para UUIDs
+  .array()
+  .notNull()
+  .default(sql`'{}'::varchar(36)[]`),
   createdAt: timestamp("created_at")
     .$defaultFn(() => /* @__PURE__ */ new Date())
     .notNull(),

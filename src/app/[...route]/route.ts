@@ -4,8 +4,7 @@ import { handle } from "hono/vercel";
 import { protect } from "./(middlewares)/protect";
 import { db } from "@/database";
 import { movies, users } from "@/database/schema";
-import { count, eq } from "drizzle-orm";
-import { without } from "lodash";
+import { count, eq, inArray } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod/v4";
 
@@ -53,30 +52,30 @@ app.post(
       .from(movies)
       .where(eq(movies.id, movieId));
 
-    if (!existingMovie || existingMovie.length <= 0) {
-      return c.json(
-        {
-          success: false,
-          message: "Movie not found",
-        },
-        404
-      );
+    if (!existingMovie) {
+      return c.json({ message: "Movie not found" }, 404);
     }
 
-    const user = await db
+    const [user] = await db
       .select()
       .from(users)
       .where(eq(users.id, userData?.id!));
 
-    const userUpdate = await db
+    if (user.favoriteIds.includes(movieId)) {
+      return c.json({ message: "Movie already in favorites" }, 400);
+    }
+
+    const newFavoriteIds = [...user.favoriteIds, movieId];
+
+    const [updatedUser] = await db
       .update(users)
       .set({
-        favoriteIds: [...user[0].favoriteIds, movieId],
+        favoriteIds: newFavoriteIds,
       })
-      .where(eq(users.id, movieId))
-      .returning();
+      .where(eq(users.id, userData?.id!))
+      .returning({ favoriteIds: users.favoriteIds });
 
-    return c.json(userUpdate, 200);
+    return c.json(updatedUser, 200);
   }
 );
 
@@ -92,48 +91,54 @@ app.delete(
   async (c) => {
     const { movieId } = c.req.valid("json");
     const userData = c.get("user");
+    const userId = userData?.id!;
 
-    const existingMovie = await db
-      .select()
-      .from(movies)
-      .where(eq(movies.id, movieId));
-
-    if (!existingMovie || existingMovie.length <= 0) {
-      return c.json(
-        {
-          success: false,
-          message: "Movie not found",
-        },
-        404
-      );
-    }
-
-    const user = await db
+    const [user] = await db
       .select()
       .from(users)
-      .where(eq(users.id, userData?.id!));
+      .where(eq(users.id, userId));
 
-    const updateFavoriteIds = without(user[0].favoriteIds, movieId);
+    if (!user) {
+      return c.json({ message: "User not found" }, 404);
+    }
 
-    const updateUser = await db
+    if (!user.favoriteIds.includes(movieId)) {
+      return c.json({ success: true }, 200);
+    }
+
+    const updateFavoriteIds = user.favoriteIds.filter(id => id !== movieId);
+
+    await db
       .update(users)
       .set({
         favoriteIds: updateFavoriteIds,
       })
-      .where(eq(users.id, movieId))
+      .where(eq(users.id, userId))
       .returning();
 
-    return c.json(updateUser, 200);
+    return c.json({ success: true }, 200);
   }
 );
 
 app.get("/favorites", protect, async (c) => {
   const userData = c.get("user");
-  const favoriteMovies = await db
+  const [user] = await db
     .select({ favoriteIds: users.favoriteIds })
     .from(users)
     .where(eq(users.id, userData?.id!));
-  return c.json(favoriteMovies[0].favoriteIds, 200);
+
+  const favoriteIds = user?.favoriteIds ?? [];
+
+  if (favoriteIds.length === 0) {
+    return c.json([], 200);
+  }
+
+  const favoritedMovies = await db
+    .select()
+    .from(movies)
+    .where(inArray(movies.id, favoriteIds));
+
+  return c.json(favoritedMovies, 200);
 });
 
 export const GET = handle(app);

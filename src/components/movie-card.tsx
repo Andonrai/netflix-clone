@@ -1,4 +1,5 @@
 import { FaPlay } from "react-icons/fa";
+import FavoriteButton from "./favorite-button";
 
 interface MovieCardProps {
   data: Record<string, any>;
@@ -26,6 +27,7 @@ export default function MovieCard({ data }: MovieCardProps) {
             >
               <FaPlay className="text-black " />
             </div>
+            <FavoriteButton movieId={data.id}/>
           </div>
           <p className="text-green-400 font-semibold mt-4">
             New <span className="text-white">2025</span>
