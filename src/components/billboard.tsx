@@ -11,7 +11,6 @@ export default function Billboard() {
 
   const handleOpenModal = useCallback(() => {
     if (!data || !data.id) return;
-    console.log("billboard", data.id)
     openModal(data.id);
   }, [openModal, data]);
 
