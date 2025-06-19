@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession } from "@/lib/auth-client";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export default function Profiles() {
@@ -15,7 +16,7 @@ export default function Profiles() {
           <div onClick={() => router.push("/")}>
             <div className="group flex-row w-44 mx-auto">
               <div className="size-44 rounded-md flex items-center justift-center border-transparent group-hover:cursor-pointer group-hover:border group-hover:border-white overflow-hidden">
-                <img src="/images/default-blue.webp" alt="Profile" />
+                <Image src="/images/default-blue.webp" alt="Profile" />
               </div>
               <div className="mt-4 text-gray-400 text-2xl text-center group-hover:text-white">
                 {data?.user.name}

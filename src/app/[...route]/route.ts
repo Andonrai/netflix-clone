@@ -81,7 +81,7 @@ app.post(
     const [user] = await db
       .select()
       .from(users)
-      .where(eq(users.id, userData?.id!));
+      .where(eq(users.id, userData!.id));
 
     if (user.favoriteIds.includes(movieId)) {
       return c.json({ message: "Movie already in favorites" }, 400);
@@ -94,7 +94,7 @@ app.post(
       .set({
         favoriteIds: newFavoriteIds,
       })
-      .where(eq(users.id, userData?.id!))
+      .where(eq(users.id, userData!.id))
       .returning({ favoriteIds: users.favoriteIds });
 
     return c.json(updatedUser, 200);
@@ -113,7 +113,7 @@ app.delete(
   async (c) => {
     const { movieId } = c.req.valid("json");
     const userData = c.get("user");
-    const userId = userData?.id!;
+    const userId = userData!.id;
 
     const [user] = await db.select().from(users).where(eq(users.id, userId));
 
@@ -144,9 +144,9 @@ app.get("/favorites", protect, async (c) => {
   const [user] = await db
     .select({ favoriteIds: users.favoriteIds })
     .from(users)
-    .where(eq(users.id, userData?.id!));
+    .where(eq(users.id, userData!.id));
 
-  const favoriteIds = user?.favoriteIds ?? [];
+  const favoriteIds = user.favoriteIds ?? [];
 
   if (favoriteIds.length === 0) {
     return c.json([], 200);

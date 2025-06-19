@@ -1,3 +1,4 @@
+"use client";
 import { useInfoModal } from "@/hooks/useInfoModal";
 import useMovie from "@/hooks/useMovie";
 import { useCallback, useEffect, useState } from "react";
@@ -7,14 +8,14 @@ import FavoriteButton from "./favorite-button";
 
 interface InfoModalProps {
   visible?: boolean;
-  onClose: any;
+  onClose: () => void;
 }
 
 export default function InfoModal({ visible, onClose }: InfoModalProps) {
   const [isVisible, setIsVisible] = useState(!!visible);
 
   const { movieId } = useInfoModal();
-  const { data } = useMovie(movieId!);
+  const { data } = useMovie(movieId ?? "");
 
   useEffect(() => {
     setIsVisible(!!visible);
@@ -57,8 +58,8 @@ export default function InfoModal({ visible, onClose }: InfoModalProps) {
                 {data?.title}
               </p>
               <div className="flex flex-row gap-4 items-center">
-                <PlayButton movieId={data?.id!}/>
-                <FavoriteButton movieId={data?.id!} />
+                {data && <PlayButton movieId={data.id} />}
+                {data && <FavoriteButton movieId={data.id} />}
               </div>
             </div>
           </div>

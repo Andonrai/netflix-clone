@@ -3,9 +3,11 @@ import FavoriteButton from "./favorite-button";
 import { useRouter } from "next/navigation";
 import { useInfoModal } from "@/hooks/useInfoModal";
 import { ChevronDown } from "lucide-react";
+import { Movie } from "@/types/movie";
+import Image from "next/image";
 
 interface MovieCardProps {
-  data: Record<string, any>;
+  data: Movie;
 }
 
 export default function MovieCard({ data }: MovieCardProps) {
@@ -14,17 +16,25 @@ export default function MovieCard({ data }: MovieCardProps) {
 
   return (
     <div className="group bg-zinc-900 col-span relative h-[12vw]">
-      <img
-        className="cursor-pointer object-cover transition duration-75 shadow-xl rounded-md group-hover:opacity-90 sm:group-hover:opacity-0 delay-300 w-full h-[12vw]"
-        src={data.thumbnailUrl}
-        alt="Thumbnail"
-      />
-      <div className="opacity-0 absolute top-0 transition duration-200 z-10 invisible sm:visible delay-300 w-full scale-0 group-hover:scale-110 group-hover:-translate-y-[6vw] group-hover:translate-x-[2vw] group-hover:opacity-100">
-        <img
-          className="cursor-pointer object-cover transition duration-75 shadow-xl rounded-t-md w-full h-[12vw]"
+      <div className="relative w-full h-[12vw]">
+        <Image
           src={data.thumbnailUrl}
           alt="Thumbnail"
+          fill
+          className="cursor-pointer object-cover transition duration-75 shadow-xl rounded-md group-hover:opacity-90 sm:group-hover:opacity-0 delay-300"
+          sizes="100vw"
         />
+      </div>
+      <div className="opacity-0 absolute top-0 transition duration-200 z-10 invisible sm:visible delay-300 w-full scale-0 group-hover:scale-110 group-hover:-translate-y-[6vw] group-hover:translate-x-[2vw] group-hover:opacity-100">
+        <div className="relative w-full h-[12vw]">
+          <Image
+            className="cursor-pointer object-cover transition duration-75 shadow-xl rounded-t-md"
+            src={data.thumbnailUrl}
+            alt="Thumbnail"
+            fill
+            sizes="100vw"
+          />
+        </div>
         <div className="z-10 bg-zinc-800 p-2 lg:p-4 absolute w-full transition shadow-md rounded-b-md ">
           <div className="flex flex-row items-center gap-3">
             <div

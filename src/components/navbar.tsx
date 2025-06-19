@@ -1,9 +1,11 @@
+"use client";
 import { useCallback, useEffect, useState, useRef } from "react";
 import { Bell, ChevronDown, Search } from "lucide-react";
 import MobileMenu from "./mobile-menu";
 import NavbarItem from "./navbar-item";
 import AccountMenu from "./account-menu";
 import { useSession } from "@/lib/auth-client";
+import Image from "next/image";
 
 const TOP_OFFSET = 66;
 
@@ -32,7 +34,8 @@ export default function Navbar() {
       return document.scrollingElement || document.documentElement;
     };
 
-    scrollContainerRef.current = (detectScrollContainer() as any) || window;
+    scrollContainerRef.current =
+      (detectScrollContainer() as HTMLElement | Window) || window;
 
     // 2. Manejar el scroll con throttling
     let lastScrollPosition = 0;
@@ -97,7 +100,15 @@ export default function Navbar() {
           showBackground ? "bg-zinc-900/90" : ""
         }`}
       >
-        <img className="h-4 lg:h-7" src="/images/logo.webp" alt="Logo" />
+        <div className="relative h-4 lg:h-7 w-[120px]">
+          <Image
+            fill
+            src="/images/logo.webp"
+            alt="Logo"
+            className="object-contain"
+            sizes="(max-width: 1024px) 120px, 200px"
+          />
+        </div>
         <div className="flex-row ml-8 gap-7 hidden lg:flex">
           <NavbarItem>Home</NavbarItem>
           <NavbarItem>Series</NavbarItem>
@@ -130,8 +141,14 @@ export default function Navbar() {
             onClick={toggleAccountMenu}
             className="flex flex-row items-center gap-2 cursor-pointer relative"
           >
-            <div className="size-6 lg:size-10 rounded-md overflow-hidden">
-              <img src="/images/default-blue.webp" alt="Profile" />
+            <div className="size-6 lg:size-10 rounded-md overflow-hidden relative">
+              <Image
+                fill
+                className="object-cover"
+                src="/images/default-blue.webp"
+                alt="Profile"
+                sizes="(max-width: 1024px) 1.5rem, 2.5rem"
+              />
             </div>
             <ChevronDown
               className={`transition ${

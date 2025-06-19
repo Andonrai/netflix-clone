@@ -1,8 +1,10 @@
+"use client";
 import { isEmpty } from "lodash";
 import MovieCard from "./movie-card";
+import { Movie } from "@/types/movie";
 
 interface MovieListProps {
-  data: Record<string, any>;
+  data: Movie[];
   title: string;
 }
 
@@ -13,7 +15,7 @@ export default function MovieList({ data, title }: MovieListProps) {
     <div>
         <p className="text-md md:text-xl lg:text-2xl font-semibold mb-4">{title}</p>
         <div className="grid grid-cols-4 gap-2">
-            {data.map((movie: any) => (
+            {data.map((movie) => (
                 <MovieCard key={movie.id} data={movie} />
             ))}
         </div>

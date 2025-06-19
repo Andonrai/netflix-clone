@@ -6,6 +6,7 @@ import { SignedIn } from "@/components/auth/signed-in";
 import { SignedOut } from "@/components/auth/signed-out";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import Image from "next/image";
 
 export default function Auth() {
   const [email, setEmail] = useState("");
@@ -62,7 +63,7 @@ export default function Auth() {
     <div className="relative h-full w-full bg-[url(\/images\/hero.webp)] bg-no-repeat bg-center bg-fixed bg-cover">
       <div className="bg-black w-full h-full lg:bg-black/50">
         <nav className="px-12 py-5">
-          <img src="/images/logo.webp" alt="Logo" className="h-12" />
+          <Image src="/images/logo.webp" alt="Logo" className="h-12" height={48} />
         </nav>
 
         <div className="flex justify-center">
@@ -78,27 +79,27 @@ export default function Auth() {
               </h2>
               <div className="flex flex-col gap-4">
                 {variant === "register" && (
-                  <>
+                    <>
                     <Input
                       id="name"
                       label="Username"
-                      onChange={(ev: any) => setName(ev.target.value)}
+                      onChange={(ev: React.ChangeEvent<HTMLInputElement>) => setName(ev.target.value)}
                       value={name}
                     />
-                  </>
+                    </>
                 )}
                 <Input
                   id="email"
                   type="email"
                   label="Email"
-                  onChange={(ev: any) => setEmail(ev.target.value)}
+                  onChange={(ev: React.ChangeEvent<HTMLInputElement>) => setEmail(ev.target.value)}
                   value={email}
                 />
                 <Input
                   id="password"
                   type="password"
                   label="Password"
-                  onChange={(ev: any) => setPassword(ev.target.value)}
+                  onChange={(ev: React.ChangeEvent<HTMLInputElement>) => setPassword(ev.target.value)}
                   value={password}
                 />
               </div>
